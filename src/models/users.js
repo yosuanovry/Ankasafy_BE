@@ -4,10 +4,23 @@ const selectData = () => {
   return Pool.query(`SELECT * FROM users`);
 };
 
-const insertPhoto = (data) => {
-  console.log(data);
-  return Pool.query(`INSERT INTO users(photo) VALUES('${data}')`);
+const updateUserPhoto = (id, photo) => {
+  console.log(photo);
+  return Pool.query(`UPDATE users SET photo='${photo}' WHERE id='${id}'`);
 };
+
+const updateUserData = (id, data) => {
+  let {fullname, phone, city, address, postcode} = data;
+  console.log(data)
+  return Pool.query
+  (`UPDATE users 
+  SET fullname='${fullname}', 
+  phone='${phone}',
+  city='${city}', 
+  address='${address}', 
+  postcode='${postcode}' 
+  WHERE id='${id}'`);
+}
 
 const selectDataById = (id) => {
   return new Promise((resolve,reject)=>
@@ -33,11 +46,5 @@ const selectDataByEmail = (email) => {
   }))
 }
 
-const updateData = (id, data) => {
-  let {fullname, photo} = data;
-  console.log(data)
-  return Pool.query(`UPDATE users SET fullname='${fullname}', photo='${photo}' WHERE id='${id}'`);
-}
 
-
-module.exports = { selectData, insertPhoto, selectDataById, updateData, selectDataByEmail };
+module.exports = { selectData, updateUserPhoto, selectDataById, updateUserData, selectDataByEmail };

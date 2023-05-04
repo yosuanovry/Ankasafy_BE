@@ -13,7 +13,6 @@ const AirlinesController = {
 
       let airlinesData = {};
       airlinesData.airlines_name = req.body.airlines_name;
-      airlinesData.facilities = req.body.facilities;
       airlinesData.photo = imageUrl.secure_url;
 
       let result = await insertAirlines(airlinesData);

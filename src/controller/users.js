@@ -1,5 +1,6 @@
-const { selectData, insertPhoto, selectDataById, updateData, selectDataByEmail } = require("../models/users");
+const { selectData, updateUserPhoto, selectDataById, updateUserData, selectDataByEmail } = require("../models/users");
 const cloudinary = require("../config/photo")
+const { response } = require(`../middleware/errorhandling`);
 
 const UsersController = {
   getDetailId: async (req, res, next) => {
@@ -7,16 +8,17 @@ const UsersController = {
     let {rows:[users]} =await selectDataById(req.payload.id)
     
     if(!req.payload.id) {
-      return res.status(404).json({status:404,message:`there is no token`})
+       return response(res, 400, false, null, `there is no token`);
     }  
 
     if(!users) {
-      return res.status(404).json({ status: 404, message: `data user not found` });
+      return response(res, 400, false, null, `data user not found`);
     }
 
-    return res.status(200).json({ status: 200, message: `data found`, data: users})  
+    return response(res, 200, true, users, `data user found`);
     } catch(err) {
-      next(res.status(404).json({status: 404, message: err.message }));
+      console.log(err);
+      response(res, 404, false, null, "data user not found (catch)");
     }
   },
 
@@ -51,60 +53,71 @@ const UsersController = {
   },
 
 
-  postData: async (req, res, next) => {
+  putUserData: async (req, res, next) => {
     try {
-    let body = req.query;
-    let input = await insertData(body.name);
+      
+      let id = req.payload.id
+      
+      let {rows:[users]} =await selectDataById(id)
 
-    if (!input) {
-      res.status(401).json({ status: 400, message: `input data failed` });
+      let fullname = req.body.fullname || users.fullname
+      let phone = req.body.phone || users.phone
+      let city = req.body.city || users.city
+      let address = req.body.address || users.address
+      let postcode = req.body.postcode || users.postcode
+
+    let data = {fullname,phone,city,address,postcode}
+    
+
+    if (!users) {
+      return response(res, 400, false, null, `invalid user`);
     }
 
-    let checkData = await selectDataById("name", body.name);
+    
+    let update = await updateUserData(id, data);
 
-    if (!checkData) {
-      res.status(404).json({ status: 404, message: `input data failed` });
+    if (!update) {
+      return response(res, 400, false, null, `update user data failed`);
     }
 
-    res.status(200).json({ status: 200, message: `input data success`, data: checkData.rows });
+    return response(res, 200, true, null, `update user data success`);
+
   } catch(err) {
-    next(res.status(404).json({status: 404, message: err.message }));
+    console.log(err);
+    response(res, 400, false, null, "update user data failed (catch)");
   }
   },
 
-
-  putData: async (req, res, next) => {
+  putUserPhoto: async (req, res, next) => {
     try {
-    const imageUrl = await cloudinary.uploader.upload(req.file.path,{folder:'user'})  
+      const imageUrl = await cloudinary.uploader.upload(req.file.path,{folder:'ankasafy'})
 
-    if(!imageUrl) {
-      res.status(404).json({status:404,message:`failed to upload photo`})
+      if(!imageUrl) {
+        return response(res, 400, false, null, `upload photo failed`);
+      } 
+
+      photo = imageUrl.secure_url
+
+      console.log(photo)
+
+      let result = await updateUserPhoto(req.payload.id, photo)
+
+      if(!result) {
+        return response(res, 400, false, null, `update user photo failed`);
+      }
+
+      let {rows:[users]} =await selectDataById(req.payload.id)
+
+      return response(res, 200, true, users, `update photo success`);
+
+    } catch(err) {
+      console.log(err)
+      return response(res, 400, false, null, `update user photo failed (catch)`);
     }
-  
-    let data = {};
-    data.fullname = req.body.fullname;
-    data.photo = imageUrl.secure_url;
-
-    console.log(data)
-
-    let {rows:[users]} =await selectDataById(req.payload.id)
-
-    if(!users) {
-      res.status(404).json({status:404,message:`this recipe is not owned by you`})
-    }
-
-    let result = await updateData(req.payload.id, data);
-
-    if (!result) {
-      res.status(404).json({ status: 404, message: `update data failed` });
-    }
-
-    res.status(200).json({ status: 200, message: `update data success`});
-  } catch(err) {
-    next(res.status(404).json({status: 404, message: err.message }));
   }
-  },
 
 };
+
+
 
 module.exports = UsersController;
