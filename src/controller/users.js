@@ -5,7 +5,7 @@ const { response } = require(`../middleware/errorhandling`);
 const UsersController = {
   getDetailId: async (req, res, next) => {
     try {
-    let {rows:[users]} =await selectDataById(req.payload.id)
+    let {rows:[users]} = await selectDataById(req.payload.id)
     
     if(!req.payload.id) {
        return response(res, 400, false, null, `there is no token`);
@@ -65,8 +65,9 @@ const UsersController = {
       let city = req.body.city || users.city
       let address = req.body.address || users.address
       let postcode = req.body.postcode || users.postcode
+      let nationality = req.body.nationality || users.nationality
 
-    let data = {fullname,phone,city,address,postcode}
+    let data = {fullname,phone,city,address,postcode, nationality}
     
 
     if (!users) {

@@ -1,4 +1,4 @@
-const Pool = require("./../config/db");
+const Pool = require("../config/db");
 
 const insertTicket = (data) => {
   const { id, departure_time, departure_city, departure_nationality, arrival_time, arrival_city, arrival_nationality, transits, facilities, price, gate, terminal, class_type, code_type, airlines_id } = data;

@@ -1,4 +1,4 @@
-const Pool = require('./../config/db')
+const Pool = require('../config/db')
 
 const insertAirlines = (data) => {
     const {

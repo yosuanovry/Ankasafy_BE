@@ -1,4 +1,4 @@
-const Pool = require('./../config/db')
+const Pool = require('../config/db')
 
 const selectUserById = (id) => {
   return new Promise((resolve,reject)=>

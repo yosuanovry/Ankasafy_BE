@@ -10,15 +10,16 @@ const updateUserPhoto = (id, photo) => {
 };
 
 const updateUserData = (id, data) => {
-  let {fullname, phone, city, address, postcode} = data;
+  let {fullname, phone, city, address, postcode, nationality} = data;
   console.log(data)
   return Pool.query
   (`UPDATE users 
   SET fullname='${fullname}', 
   phone='${phone}',
-  city='${city}', 
+  city='${city}',
+  nationality='${nationality}', 
   address='${address}', 
-  postcode='${postcode}' 
+  postcode='${postcode}'
   WHERE id='${id}'`);
 }
 
