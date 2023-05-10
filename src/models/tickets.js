@@ -36,7 +36,7 @@ const findTicketById = (id) => {
 };
 
 const findTickets = (data) => {
-  let { searchBy, search, sortBy, sort, limit, offset } = data;
+let { searchBy, search, sortBy, sort, limit, offset } = data
   return new Promise((resolve, reject) =>
     Pool.query(
       `
