@@ -27,13 +27,13 @@ const UsersController = {
     let email = req.params.email
     let {rows:[users]} = await selectDataByEmail(email)
 
-    if (users) {
-      res.status(200).json({ status: 200, message: `email found`, data: users });
+    if (!users) {
+      return response(res, 400, false, null, `email not found`);
     }
     
-    res.status(400).json({ status: 400, message: `email not found` });
+    return response(res, 200, true, users, `email found`);
   } catch(err) {
-    next(res.status(404).json({status: 404, message: err.message }));
+    return response(res, 400, false, null, `email not found (catch)`);
   }
   },
 

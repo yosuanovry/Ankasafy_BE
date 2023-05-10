@@ -5,9 +5,9 @@ const {protect} = require('../middleware/authorization')
 const upload = require('../middleware/photo')
 const validateFile = require('../middleware/validatePhoto')
 
+router.get("/:email", getDataByEmail);
 router.get("/", getData);
 router.get("/profile", protect, getDetailId);
-router.get("/:email", getDataByEmail);
 // router.put("/", protect, postUserData);
 router.put("/update-profile-photo", protect, upload.single('photo'), validateFile, putUserPhoto);
 router.put("/update-profile-information", protect, putUserData);

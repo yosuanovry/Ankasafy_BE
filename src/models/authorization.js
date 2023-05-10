@@ -43,4 +43,10 @@ const verifyUser = (id) => {
   );
 }
 
-module.exports = {selectUserById,findUser,createUser,verifyUser}
+const verifyUserByEmail = (id) => {
+  return Pool.query(
+    `UPDATE users SET verification=true WHERE email='${id}'`
+  );
+}
+
+module.exports = {selectUserById,findUser,createUser,verifyUser, verifyUserByEmail}

@@ -19,16 +19,19 @@ const insertTicket = (data) => {
 
 const findTicketById = (id) => {
   return new Promise((resolve, reject) =>
-    Pool.query(`SELECT tickets.id, airline.airlines_name as airline, tickets.departure_city, tickets.departure_nationality, tickets.arrival_city, tickets.arrival_nationality, tickets.departure_time, tickets.arrival_time, tickets.transits, tickets.facilities, tickets.price 
+    Pool.query(
+      `SELECT tickets.id, airline.airlines_name as airline, airline.photo as airline_photo, tickets.departure_city, tickets.departure_nationality, tickets.arrival_city, tickets.arrival_nationality, tickets.departure_time, tickets.arrival_time, tickets.transits, tickets.facilities, tickets.price 
     from tickets
     INNER JOIN airlines as airline ON tickets.airlines_id = airline.id
-    WHERE tickets.id='${id}' AND tickets.updated_at IS NULL`, (err, result) => {
-      if (!err) {
-        resolve(result);
-      } else {
-        reject(err);
+    WHERE tickets.id='${id}' AND tickets.updated_at IS NULL`,
+      (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
       }
-    })
+    )
   );
 };
 

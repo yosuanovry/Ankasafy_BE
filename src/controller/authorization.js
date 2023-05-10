@@ -1,4 +1,4 @@
-const {findUser,createUser,selectUserById, verifyUser} = require('../models/authorization')
+const {findUser,createUser,selectUserById, verifyUser, verifyUserByEmail} = require('../models/authorization')
 const {v4:uuidv4} = require('uuid')
 const argon2 = require('argon2');
 const {generateToken, refreshToken} = require('../helpers/generateToken')
@@ -88,6 +88,7 @@ const UsersController = {
 
         return res.status(404).json({status:404,message:`login gagal`})       
     },
+
     otp: async (req,res,next)=>{
         let userId = req.params.id
         let otpUser = req.params.code
@@ -115,7 +116,36 @@ const UsersController = {
             return res.status(404).json({status:404,message:`otp user salah`})
         }
 
-    }
+    },
+
+    otpByEmail: async (req,res,next)=>{
+        let email = req.params.email
+        let otpUser = req.params.code
+        
+
+        if(!email || !otpUser){
+            return res.status(404).json({status:404,message:`masukkan otp yang benar`})
+        }
+
+        let {rows:[users]} = await findUser(email)
+
+        if(!users){
+            return res.status(404).json({status:404,message:`user tidak ditemukan`})
+        }
+        
+
+        if(users.otp == otpUser){
+            let verif =  await verifyUserByEmail(email)
+            if(verif){
+                return res.status(201).json({status:201,message:`user berhasil diverifikasi, silahkan login`})
+            } else {
+                return res.status(404).json({status:404,message:`user tidak berhasil diverifikasi`})
+            }
+        } else {
+            return res.status(404).json({status:404,message:`otp user salah`})
+        }
+
+    },
 }
 
 module.exports = UsersController
