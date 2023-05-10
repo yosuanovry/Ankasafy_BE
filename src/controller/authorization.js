@@ -37,7 +37,7 @@ const UsersController = {
         }
 
         try{
-            let url = `http://localhost:3000/auth/verification/${id}/${otp}`
+            let url = `https://drab-gray-bull-ring.cyclic.app/auth/verification/${id}/${otp}`
             let sendEmail =  email(req.body.email,otp,url,req.body.fullname)
             if(sendEmail == 'email not send'){
                 return res.status(404).json({status:404,message:`register gagal, email tidak terkirim`})                
